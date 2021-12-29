@@ -1,0 +1,9 @@
+--atlas -f rgba8888 -z auto
+astroids/astroidBrown1.png
+astroids/astroidBrown2.png
+astroids/astroidBrown3.png
+astroids/astroidBrown4.png
+astroids/astroidGray1.png
+astroids/astroidGray2.png
+astroids/astroidGray3.png
+astroids/astroidGray4.png
