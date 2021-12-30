@@ -1,17 +1,23 @@
 #include "../include/common.hpp"
 #include "../include/bullet.hpp"
+#include "../include/astroid.hpp"
+#include "../include/star.hpp"
 
-#define SCREEN_WIDTH  400
-#define SCREEN_HEIGHT 240
+
 
 
 
 bool isFlying = false;
 bool fistFly = true;
 
+float difficulity = 0.5f;
+
 
 static C2D_SpriteSheet spriteSheet;
 static C2D_SpriteSheet backgroundSpriteSheet;
+static C2D_SpriteSheet astroidSpritesheet;
+static C2D_SpriteSheet starSpriteSheet;
+
 static C2D_Image backgroundImage;
 static C2D_Image backgroundImage2;
 float playerX = SCREEN_WIDTH/2; 
@@ -19,11 +25,23 @@ float ScrollDist = 0;
 float playerSpeed = 5;
 C2D_Sprite playerSprite;
 Vec2 playerTL;
+Star star;
+
 std::vector<Bullet> bullets;
+std::vector<Astroid> astroids;
 
 
 Vec2 getTopLeftSprite(C2D_Sprite in){
 	return (Vec2){in.params.pos.x - in.params.pos.w/2,in.params.pos.y - in.params.pos.h/2};
+}
+
+void spawnAstroid(){
+	Astroid astroid = Astroid(astroidSpritesheet);
+	astroid.spr.params.pos.x = RandomFloat(0, SCREEN_WIDTH);
+	astroid.spr.params.pos.y = -256;
+	astroid.setSpeed(rand() % 5 + 1);
+	astroid.setDir((rand() - 0.5) * 5, -1);
+	astroids.push_back(astroid);
 }
 
 void playerMove(C2D_Sprite _player, float dir){
@@ -60,11 +78,20 @@ int main(int argc, char* argv[])
 	C2D_Prepare();
 	consoleInit(GFX_BOTTOM, NULL);
 	C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
-
+	//Loading spritesheets here
 	spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
 	if (!spriteSheet) svcBreak(USERBREAK_PANIC);
 	backgroundSpriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/backgrounds.t3x");
 	if (!spriteSheet) svcBreak(USERBREAK_PANIC);
+	astroidSpritesheet = C2D_SpriteSheetLoad("romfs:/gfx/astroids.t3x");
+	if (!spriteSheet) svcBreak(USERBREAK_PANIC);
+	starSpriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/stars.t3x");
+	if (!spriteSheet) svcBreak(USERBREAK_PANIC);
+
+
+	star = Star(starSpriteSheet);
+
+	//End Spritesheet loading
 	backgroundImage  = C2D_SpriteSheetGetImage(backgroundSpriteSheet,0);
 	backgroundImage2 = C2D_SpriteSheetGetImage(backgroundSpriteSheet,0);
 
@@ -87,12 +114,20 @@ int main(int argc, char* argv[])
 		}
 		if(kDown & KEY_A){
 			printf("FIRE\n");
+			//This should be moved to its own funtion really, o well
 			Bullet b = Bullet(spriteSheet);
 			b.isFlying = true;
 			b.spr.params.pos.x = playerSprite.params.pos.x;
 			b.spr.params.pos.y = playerSprite.params.pos.y - playerSprite.params.pos.h/2;
 			bullets.push_back(b);
 			
+		}
+		if(kDown & KEY_B){
+			printf("INCOMMING\n");
+			spawnAstroid();
+		}
+		if(kDown & KEY_X || kHeld & KEY_X){
+			star.update();
 		}
 
 		for (u16 i = 0; i < bullets.size(); i++){
@@ -101,35 +136,49 @@ int main(int argc, char* argv[])
 				bullets.erase(bullets.begin() + i);
 			}
 		}		
-		printf("\x1b[0;0HAmount of Bullets: %d\n", bullets.size());
+		for (u32 i = 0; i < astroids.size(); i++){
+			astroids[i].update();
+			//if(astroids[i].checkDelete()){
+			//	astroids.erase(astroids.begin() + i);
+			//}
+		}
 
-		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-		C2D_TargetClear(top, C2D_Color32(0,0,0,1));
-		C2D_SceneBegin(top);
-		double xScale = SCREEN_WIDTH/backgroundImage.tex->width;
-		C2D_DrawImageAt(backgroundImage,0,ScrollDist,0,NULL,(double)400/256,1);
-		C2D_DrawImageAt(backgroundImage2,0,ScrollDist - 256,0,NULL,(double)400/256,1);
+		
+		if(rand() * 100 > difficulity){
+			spawnAstroid();
+		}
+
 		ScrollDist+= 0.5;
 		if(ScrollDist > 256){
 			ScrollDist = 0;
 		}
 
+		printf("\x1b[0;0HAmount of Bullets: %d\n", bullets.size());
+
+		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+		C2D_TargetClear(top, C2D_Color32(0,0,0,1));
+		C2D_SceneBegin(top);
+		
+		//2 imaages are being drawn to fake the scrolling effect
+		C2D_DrawImageAt(backgroundImage,0,ScrollDist,0,NULL,(double)400/256,1);
+		C2D_DrawImageAt(backgroundImage2,0,ScrollDist - 256,0,NULL,(double)400/256,1);
+		star.render();
+
 		C2D_DrawSprite(&playerSprite);
 		
 		for (u16 i = 0; i < bullets.size(); i++){
-			//C2D_DrawSprite(&bullets[i].spr);
 			bullets[i].render();
 		}
-		
-
-		//C2D_DrawCircleSolid(Bullet.params.pos.x, Bullet.params.pos.y, 0, 20, clrWhite);
-
+		for (u32 i = 0; i < astroids.size(); i++){
+			astroids[i].render();
+		}
 		C3D_FrameEnd(0);
-
 	}
 
 	C2D_SpriteSheetFree(spriteSheet);
+	C2D_SpriteSheetFree(astroidSpritesheet);
 	C2D_SpriteSheetFree(backgroundSpriteSheet);
+	C2D_SpriteSheetFree(starSpriteSheet);
 	C2D_Fini();
 	C3D_Fini();
 	gfxExit();

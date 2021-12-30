@@ -2,15 +2,17 @@
 #include "common.hpp"
 
 class Astroid{
-    public:
+public:
     C2D_Sprite spr;
     float astroidSpeed = 5;
-    bool isFlying = false;
 
     Astroid(C2D_SpriteSheet spritesheet);
-    ~Astroid();
     void update();
     void render();
     bool checkDelete();
+    void setSpeed(float speed);
+    void setDir(float x, float y);
+private:
+    Vec2 dir;
 
 };

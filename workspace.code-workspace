@@ -2,11 +2,15 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "..\\..\\Desktop\\2d_shapes"
 		}
 	],
 	"settings": {
 		"files.associations": {
-			"citro2d.h": "c"
+			"citro2d.h": "c",
+			"chrono": "c"
 		}
 	}
 }

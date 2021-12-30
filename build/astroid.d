@@ -1,4 +1,4 @@
-main.o: C:/Users/bramm/projects/dingus/source/main.cpp \
+astroid.o: C:/Users/bramm/projects/dingus/source/astroid.cpp \
  c:\users\bramm\projects\dingus\include\common.hpp \
  C:/devkitpro/libctru/include/citro2d.h \
  C:/devkitpro/libctru/include/citro3d.h \
@@ -104,9 +104,7 @@ main.o: C:/Users/bramm/projects/dingus/source/main.cpp \
  C:/devkitpro/libctru/include/c2d/sprite.h \
  C:/devkitpro/libctru/include/c2d/text.h \
  C:/devkitpro/libctru/include/c2d/font.h \
- c:\users\bramm\projects\dingus\include\bullet.hpp \
- c:\users\bramm\projects\dingus\include\astroid.hpp \
- c:\users\bramm\projects\dingus\include\star.hpp
+ c:\users\bramm\projects\dingus\include\astroid.hpp
 c:\users\bramm\projects\dingus\include\common.hpp:
 C:/devkitpro/libctru/include/citro2d.h:
 C:/devkitpro/libctru/include/citro3d.h:
@@ -212,6 +210,4 @@ C:/devkitpro/libctru/include/c2d/spritesheet.h:
 C:/devkitpro/libctru/include/c2d/sprite.h:
 C:/devkitpro/libctru/include/c2d/text.h:
 C:/devkitpro/libctru/include/c2d/font.h:
-c:\users\bramm\projects\dingus\include\bullet.hpp:
 c:\users\bramm\projects\dingus\include\astroid.hpp:
-c:\users\bramm\projects\dingus\include\star.hpp:
