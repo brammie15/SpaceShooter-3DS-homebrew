@@ -37,17 +37,19 @@ Vec2 getTopLeftSprite(C2D_Sprite in){
 
 void spawnAstroid(){
 	Astroid astroid = Astroid(astroidSpritesheet);
-	astroid.spr.params.pos.x = RandomFloat(0, SCREEN_WIDTH);
-	astroid.spr.params.pos.y = -256;
+	astroid.spr.params.pos.x = RandomFloat(astroid.spr.params.pos.w + 20, SCREEN_WIDTH - astroid.spr.params.pos.w - 20);
+	astroid.spr.params.pos.y = -astroid.spr.params.pos.h; 
 	astroid.setSpeed(rand() % 5 + 1);
-	astroid.setDir((rand() - 0.5) * 5, -1);
+	astroid.setDir((rand() - 0.5) * 5, 1);
+	C2D_SpriteScale(&astroid.spr, RandomFloat(0.5f,1.1f), RandomFloat(0.5f,1.1f));
+	C2D_SpriteSetRotation(&astroid.spr, RandomFloat(0,360));
 	astroids.push_back(astroid);
 }
 
 void playerMove(C2D_Sprite _player, float dir){
 	float moveBy = dir * playerSpeed;
 	playerTL = getTopLeftSprite(playerSprite);
-
+	//Welcome back to JankTown
 	if(playerX + moveBy >= SCREEN_WIDTH - _player.params.pos.w/2){
 		playerX = SCREEN_WIDTH - _player.params.pos.w/2;
 	}else if (playerX + moveBy < _player.params.pos.w/2){
@@ -145,7 +147,7 @@ int main(int argc, char* argv[])
 
 		
 		if(rand() * 100 > difficulity){
-			spawnAstroid();
+		//	spawnAstroid();
 		}
 
 		ScrollDist+= 0.5;
