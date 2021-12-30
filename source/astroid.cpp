@@ -17,11 +17,14 @@ void Astroid::render(){
 }
 void Astroid::update(){
     //Bullet Update
-    C2D_SpriteSetPos(&spr, dir.x, dir.y);
     //check if the astroid is hitting the side edge
+    // if(spr.params.pos.x + spr.params.pos.w/2 > SCREEN_WIDTH || spr.params.pos.x - spr.params.pos.w/2 < 0){
+    // }
+
     if(spr.params.pos.x + spr.params.pos.w/2 > SCREEN_WIDTH || spr.params.pos.x - spr.params.pos.w/2 < 0){
         dir.x *= -1;
     }
+    C2D_SpriteMove(&spr, dir.x * astroidSpeed, dir.y * astroidSpeed);
     //End Bullet Update
 }
 

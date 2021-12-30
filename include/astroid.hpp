@@ -14,5 +14,6 @@ public:
     void setDir(float x, float y);
 private:
     Vec2 dir;
+    
 
 };
