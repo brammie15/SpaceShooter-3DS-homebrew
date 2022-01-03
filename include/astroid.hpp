@@ -12,8 +12,9 @@ public:
     bool checkDelete();
     void setSpeed(float speed);
     void setDir(float x, float y);
-private:
     Vec2 dir;
+    float rotationSpeed;
+private:
     
 
 };

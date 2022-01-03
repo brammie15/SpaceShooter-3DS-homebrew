@@ -37,11 +37,18 @@ Vec2 getTopLeftSprite(C2D_Sprite in){
 
 void spawnAstroid(){
 	Astroid astroid = Astroid(astroidSpritesheet);
-	astroid.spr.params.pos.x = RandomFloat(astroid.spr.params.pos.w + 20, SCREEN_WIDTH - astroid.spr.params.pos.w - 20);
-	astroid.spr.params.pos.y = -astroid.spr.params.pos.h; 
-	astroid.setSpeed(rand() % 5 + 1);
-	astroid.setDir((rand() - 0.5) * 5, 1);
-	C2D_SpriteScale(&astroid.spr, RandomFloat(0.5f,1.1f), RandomFloat(0.5f,1.1f));
+	// astroid.spr.params.pos.x = RandomFloat(astroid.spr.params.pos.w + 20, SCREEN_WIDTH - astroid.spr.params.pos.w - 20);
+	float ypos = -astroid.spr.params.pos.h;
+	float xpos = SCREEN_WIDTH/2; 
+
+	astroid.astroidSpeed = 3;
+	astroid.rotationSpeed = RandomFloat(-0.1,0.1);
+	//Y HAS TO BE NEGATED OR SHIT BREAKS 
+
+	astroid.setDir(RandomFloat(-20,20), 1);
+	float scale = RandomFloat(0.5f, 1.1f);
+	C2D_SpriteSetPos(&astroid.spr, xpos, ypos);
+	C2D_SpriteScale(&astroid.spr, scale, scale);
 	C2D_SpriteSetRotation(&astroid.spr, RandomFloat(0,360));
 	astroids.push_back(astroid);
 }
@@ -71,8 +78,8 @@ static void initSprites(){
 	//End PlayerInit
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+
 	romfsInit();
 	gfxInitDefault();
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
@@ -140,9 +147,9 @@ int main(int argc, char* argv[])
 		}		
 		for (u32 i = 0; i < astroids.size(); i++){
 			astroids[i].update();
-			//if(astroids[i].checkDelete()){
-			//	astroids.erase(astroids.begin() + i);
-			//}
+			if(astroids[i].checkDelete()){
+				astroids.erase(astroids.begin() + i);
+			}
 		}
 
 		
@@ -155,7 +162,8 @@ int main(int argc, char* argv[])
 			ScrollDist = 0;
 		}
 
-		printf("\x1b[0;0HAmount of Bullets: %d\n", bullets.size());
+		printf("\x1b[0;0HAmount of Bullets: %d", bullets.size());
+		printf("\x1b[0;2HAmount of Astroids: %d", astroids.size());
 
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(top, C2D_Color32(0,0,0,1));
@@ -166,11 +174,11 @@ int main(int argc, char* argv[])
 		C2D_DrawImageAt(backgroundImage2,0,ScrollDist - 256,0,NULL,(double)400/256,1);
 		star.render();
 
-		C2D_DrawSprite(&playerSprite);
 		
 		for (u16 i = 0; i < bullets.size(); i++){
 			bullets[i].render();
 		}
+		C2D_DrawSprite(&playerSprite);
 		for (u32 i = 0; i < astroids.size(); i++){
 			astroids[i].render();
 		}

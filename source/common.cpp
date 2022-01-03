@@ -20,3 +20,11 @@ int RandomInt(int min, int max)
 	int random = rand() % (max - min + 1) + min;
 	return random;
 }
+
+bool isWithinScreenBounds(C2D_Sprite sprite){
+    return sprite.params.pos.y + sprite.params.pos.h/2 > 0 ||
+    sprite.params.pos.x - sprite.params.pos.w/2 > SCREEN_WIDTH ||
+    sprite.params.pos.y - sprite.params.pos.h/2 < SCREEN_HEIGHT ||
+    sprite.params.pos.x + sprite.params.pos.w/2 > 0;
+
+}

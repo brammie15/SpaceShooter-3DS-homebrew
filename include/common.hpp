@@ -20,3 +20,5 @@ typedef struct{
 float RandomFloat(float min, float max);
 //return a random number between min and max
 int RandomInt(int min, int max);
+
+bool isWithinScreenBounds(C2D_Sprite sprite);
